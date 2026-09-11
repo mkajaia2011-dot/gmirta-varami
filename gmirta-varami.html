@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>გმირთა ვარამი & ლევან გოთუა</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Georgian:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0d0f12;
+            --card-bg: #161a22;
+            --card-bg-hover: #1c222d;
+            --accent-gold: #e5a93b;
+            --accent-gold-glow: rgba(229, 169, 59, 0.25);
+            --accent-red: #c0392b;
+            --accent-blue: #2980b9;
+            --text-color: #e0e6ed;
+            --text-muted: #8b949e;
+            --border-color: #2e3440;
+            --success-color: #27ae60;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Noto Sans Georgian', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.7;
+            padding-bottom: 60px;
+            min-height: 100vh;
+        }
+
+        header {
+            background: linear-gradient(135deg, #181528, #302b42, #1f1c2c);
+            padding: 45px 20px 35px;
+            text-align: center;
+            border-bottom: 3px solid var(--accent-gold);
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.6);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(229, 169, 59, 0.08) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        header h1 {
+            color: #fff;
+            font-size: 2.6rem;
+            margin-bottom: 12px;
+            text-shadow: 2px 3px 6px rgba(0, 0, 0, 0.7);
+            letter-spacing: 0.5px;
+            font-weight: 900;
+        }
+
+        header p {
+            color: var(--accent-gold);
+            font-size: 1.15rem;
+            font-weight: 600;
+        }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .nav-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-color);
+            padding: 16px 22px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 700;
+            transition: all 0.25s ease;
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            border-bottom: 3px solid transparent;
+        }
+
+        .nav-btn:hover {
+            color: var(--accent-gold);
+            background: rgba(229, 169, 59, 0.1);
+        }
+
+        .nav-btn.active {
+            color: var(--accent-gold);
+            border-bottom: 3px solid var(--accent-gold);
+            background: rgba(229, 169, 59, 0.15);
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 35px auto;
+            padding: 0 20px;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        /* App 1: Chapters Accordion */
+        .chapter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+        }
+
+        .chapter-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+        }
+
+        .chapter-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 10px 30px var(--accent-gold-glow);
+            border-color: var(--accent-gold);
+        }
+
+        .chapter-header {
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.02);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .chapter-header h3 {
+            color: var(--accent-gold);
+            font-size: 1.1rem;
+            line-height: 1.4;
+        }
+
+        .chapter-header i {
+            transition: transform 0.25s;
+        }
+
+        .chapter-card:hover .chapter-header i {
+            transform: translateX(4px);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            border: 2px solid var(--accent-gold);
+            border-radius: 14px;
+            max-width: 700px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 35px;
+            position: relative;
+            box-shadow: 0 0 35px rgba(229, 169, 59, 0.35);
+            animation: modalPop 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes modalPop {
+            from { opacity: 0; transform: scale(0.92); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 18px;
+            right: 22px;
+            font-size: 2rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            line-height: 1;
+            transition: color 0.2s, transform 0.2s;
+        }
+
+        .close-modal:hover {
+            color: #fff;
+            transform: scale(1.15);
+        }
+
+        .illustration-box {
+            width: 100%;
+            height: 190px;
+            background: #202633;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 25px;
+            color: var(--accent-gold);
+            border: 1px dashed var(--accent-gold);
+            text-align: center;
+            padding: 15px;
+        }
+
+        .illustration-box i {
+            font-size: 3.2rem;
+            margin-bottom: 12px;
+        }
+
+        .illustration-box span {
+            font-weight: 600;
+            font-size: 1rem;
+            letter-spacing: 0.5px;
+        }
+
+        .modal-body h2 {
+            color: var(--accent-gold);
+            margin-bottom: 18px;
+            font-size: 1.4rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+
+        .modal-body h4 {
+            color: #e74c3c;
+            margin: 18px 0 6px 0;
+            font-size: 1.15rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .modal-body p {
+            color: #d1d8e0;
+            font-size: 1.05rem;
+            line-height: 1.7;
+        }
+
+        /* App 2: Levan Gotua Timeline */
+        .timeline {
+            position: relative;
+            padding: 10px 0;
+        }
+
+        .timeline-item {
+            background: var(--card-bg);
+            border-left: 4px solid var(--accent-red);
+            padding: 22px;
+            margin-bottom: 18px;
+            border-radius: 0 10px 10px 0;
+            transition: all 0.3s ease;
+            font-size: 1.05rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .timeline-item:hover {
+            transform: translateX(10px);
+            background: var(--card-bg-hover);
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.4);
+        }
+
+        .timeline-item i {
+            color: var(--accent-red);
+            margin-right: 12px;
+            font-size: 1.2rem;
+        }
+
+        /* App 3: Era & Themes */
+        .info-card {
+            background: var(--card-bg);
+            padding: 28px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 22px;
+            transition: transform 0.25s ease;
+        }
+
+        .info-card:hover {
+            transform: translateY(-3px);
+            border-color: #3b4252;
+        }
+
+        .info-card h3 {
+            color: var(--accent-blue);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.25rem;
+        }
+
+        .info-card p {
+            font-size: 1.05rem;
+            color: #d5dbe3;
+        }
+
+        /* App 4: Photos & Significance */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 22px;
+            margin-bottom: 30px;
+        }
+
+        .gallery-item {
+            background: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+            border-color: var(--accent-gold);
+        }
+
+        .gallery-img {
+            width: 100%;
+            height: 190px;
+            background: #232936;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--accent-gold);
+            font-size: 3rem;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+        }
+
+        .gallery-desc {
+            padding: 20px;
+        }
+
+        .gallery-desc h4 {
+            color: var(--accent-gold);
+            margin-bottom: 8px;
+            font-size: 1.15rem;
+        }
+
+        .gallery-desc p {
+            font-size: 0.98rem;
+            color: var(--text-muted);
+        }
+
+        /* Quiz App */
+        .quiz-container {
+            background: var(--card-bg);
+            padding: 35px;
+            border-radius: 14px;
+            border: 1px solid var(--accent-gold);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 12px;
+        }
+
+        .quiz-progress {
+            color: var(--accent-gold);
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .quiz-question {
+            margin-bottom: 20px;
+            color: #fff;
+            font-size: 1.25rem;
+            line-height: 1.5;
+        }
+
+        .quiz-option {
+            background: #202633;
+            padding: 15px 22px;
+            margin: 12px 0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            border: 1px solid var(--border-color);
+            font-size: 1.05rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .quiz-option:hover {
+            background: #2d3546;
+            border-color: var(--accent-gold);
+            transform: translateX(5px);
+        }
+
+        .quiz-option.correct {
+            background: var(--success-color) !important;
+            border-color: #2ecc71 !important;
+            color: #fff !important;
+            font-weight: 700;
+        }
+
+        .quiz-option.incorrect {
+            background: var(--accent-red) !important;
+            border-color: #e74c3c !important;
+            color: #fff !important;
+        }
+
+        .btn-next, .btn-restart {
+            background: var(--accent-gold);
+            color: #111;
+            border: none;
+            padding: 12px 28px;
+            font-size: 1rem;
+            font-weight: 700;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 20px;
+            display: none;
+            transition: all 0.25s;
+        }
+
+        .btn-next:hover, .btn-restart:hover {
+            background: #f1b853;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(229, 169, 59, 0.4);
+        }
+
+        .score-board {
+            text-align: center;
+            font-size: 1.3rem;
+            color: var(--text-color);
+            padding: 20px 0;
+        }
+
+        .score-board .score-number {
+            font-size: 3rem;
+            color: var(--accent-gold);
+            font-weight: 900;
+            margin: 15px 0;
+        }
+
+        @media (max-width: 768px) {
+            header h1 { font-size: 1.9rem; }
+            header p { font-size: 1rem; }
+            .nav-btn { font-size: 0.9rem; padding: 12px 14px; }
+            .modal-content { padding: 22px; }
+            .quiz-container { padding: 22px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>გმირთა ვარამი</h1>
+        <p>ლევან გოთუას ისტორიული ეპოპეა & ავტორის ცხოვრება</p>
+    </header>
+
+    <nav>
+        <button class="nav-btn active" onclick="switchTab('app1', this)"><i class="fa-solid fa-book-open"></i> შინაარსი</button>
+        <button class="nav-btn" onclick="switchTab('app2', this)"><i class="fa-solid fa-user-nib"></i> ლევან გოთუა</button>
+        <button class="nav-btn" onclick="switchTab('app3', this)"><i class="fa-solid fa-landmark"></i> ეპოქა & თემები</button>
+        <button class="nav-btn" onclick="switchTab('app4', this)"><i class="fa-solid fa-images"></i> გალერეა & მნიშვნელობა</button>
+        <button class="nav-btn" onclick="switchTab('app5', this)"><i class="fa-solid fa-circle-question"></i> ვიქტორინა</button>
+    </nav>
+
+    <div class="container">
+
+        <!-- App 1: Content Breakdown -->
+        <div id="app1" class="tab-content active">
+            <h2 class="section-title" style="color: var(--accent-gold);">ნაწარმოების თავები (დააწკაპეთ დეტალებისთვის)</h2>
+            <div class="chapter-grid" id="chapterGrid"></div>
+        </div>
+
+        <!-- App 2: Levan Gotua Bio -->
+        <div id="app2" class="tab-content">
+            <h2 class="section-title" style="color: var(--accent-red);">მწერლისა და გმირის ბედისწერა — ლევან გოთუა</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <p><i class="fa-solid fa-flag"></i> 1920-იანი წლების ეროვნულ-განმათავისუფლებელი მოძრაობის აქტიური წარმომადგენელი და ეროვნულ-დემოკრატიული პარტიის წევრი.</p>
+                </div>
+                <div class="timeline-item">
+                    <p><i class="fa-solid fa-handcuffs"></i> პოლიტიკური შეხედულებებისა და სამშობლოს სიყვარულისთვის საბჭოთა რეჟიმმა დააპატიმრა და გადაასახლა.</p>
+                </div>
+                <div class="timeline-item">
+                    <p><i class="fa-solid fa-snowflake"></i> მან 22 წელზე მეტი გაატარა საკონცენტრაციო ბანაკებში, ძირითადად შორეულ, ყინულიან ვორკუტაში, სამშობლოსგან მოწყვეტილმა.</p>
+                </div>
+                <div class="timeline-item">
+                    <p><i class="fa-solid fa-pen-nib"></i> სწორედ ვორკუტის მძიმე ბანაკში, ფარულად დაწერა „გმირთა ვარამი“ — სიგარეტის პატარა ქაღალდებზე.</p>
+                </div>
+                <div class="timeline-item">
+                    <p><i class="fa-solid fa-tree"></i> ხელნაწერები მეგობრების დახმარებით ფარულად გამოიტანეს ბანაკიდან — ნაწერები ხის მორებში დამალეს და ასე ჩამოიტანეს საქართველოში.</p>
+                </div>
+                <div class="timeline-item">
+                    <p><i class="fa-solid fa-cross"></i> ბანაკის პატიმრებში გოთუა დიდ პატივისცემას იმსახურებდა და მას სიყვარულით „ლევან ბერს“ ეძახდნენ.</p>
+                </div>
+                <div class="timeline-item">
+                    <p><i class="fa-solid fa-language"></i> იგი თანამემამულეებს ქართული ენის დაცვასა და სწორად მეტყველებას ასწავლიდა, რუსული ბარბარიზმების გამოყენებას კი მკაცრად უშლიდა.</p>
+                </div>
+                <div class="timeline-item">
+                    <p><i class="fa-solid fa-house-user"></i> 55 წლის ასაკში იგი დაბრუნდა სამშობლოში, თუმცა საბჭოთა საქართველოშიც კვლავ მუდმივი თვალთვალისა და დასმენების ქვეშ იმყოფებოდა.</p>
+                </div>
+                <div class="timeline-item" style="border-left-color: var(--accent-gold);">
+                    <p><i class="fa-solid fa-link" style="color: var(--accent-gold);"></i> <strong>მთავარი პარალელი:</strong> მისი ცხოვრება და ნაწარმოები ერთმანეთს ერწყმის — „გმირთა ვარამის“ ავტორმა თავად გამოსცადა ის მძიმე განსაცდელი და ვარამი, რომელსაც მისი წიგნის გმირები განიცდიან.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- App 3: Easy Overview for Beginners -->
+        <div id="app3" class="tab-content">
+            <h2 class="section-title" style="color: var(--accent-blue);">გზამკვლევი მათთვის, ვინც ნაწარმოებს არ იცნობს</h2>
+            
+            <div class="info-card">
+                <h3><i class="fa-solid fa-globe"></i> ისტორიული ეპოქა (XVI-XVII სს.)</h3>
+                <p>„გმირთა ვარამი“ აღწერს XVI-XVII საუკუნეების საქართველოს, განსაკუთრებით კახეთის სამეფოს დრამატულ ცხოვრებას. ეს იყო პერიოდი, როდესაც საქართველო სამი უდიდესი ძალის — ოსმალეთის იმპერიის, ირანისა და რუსეთის იმპერიის ინტერესთა დაპირისპირების ეპიცენტრში აღმოჩნდა.</p>
+            </div>
+
+            <div class="info-card">
+                <h3><i class="fa-solid fa-shield-halberd"></i> შიდა და გარე ბრძოლები</h3>
+                <p>ნაწარმოებში ასახულია ქართველი ხალხის თავგანწირული ბრძოლა გარეშე მტრებთან, თავადაზნაურობის რთული, ხშირად დაძაბული ურთიერთობები და ქვეყნის მძიმე პოლიტიკური მდგომარეობა, სადაც ყოველ ნაბიჯზე ღალატი ან თავდადება წყვეტდა ერის ბედს.</p>
+            </div>
+
+            <div class="info-card">
+                <h3><i class="fa-solid fa-heart"></i> მთავარი ღირებულებები</h3>
+                <p>მნიშვნელოვანი ადგილი უჭირავს მეგობრობას, ერთგულებას, პატრიოტიზმსა და ქართველი ხალხის გაუტეხელ სულს. წიგნი გვიჩვენებს, რომ ყველაზე მძიმე ჟამსაც კი ეროვნული ერთიანობის შენარჩუნება გადარჩენის ერთადერთი გზაა.</p>
+            </div>
+        </div>
+
+        <!-- App 4: Photos, Visuals & Cultural Impact -->
+        <div id="app4" class="tab-content">
+            <h2 class="section-title" style="color: var(--accent-gold);">ილუსტრაციები & ნაწარმოების მნიშვნელობა</h2>
+            
+            <div class="gallery-grid">
+                <div class="gallery-item">
+                    <div class="gallery-img" style="background: linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)), url('https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=400&q=80') center/cover;">
+                        <i class="fa-solid fa-chess-rook"></i>
+                    </div>
+                    <div class="gallery-desc">
+                        <h4>გრემის ციხე-ქალაქი</h4>
+                        <p>კახეთის დიდებული დედაქალაქი, სადაც იწყება რომანის მოქმედება. იგი ერთდროულად ზეიმისა და ფარული პოლიტიკური საფრთხეების კერაა.</p>
+                    </div>
+                </div>
+
+                <div class="gallery-item">
+                    <div class="gallery-img" style="background: linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)), url('https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=400&q=80') center/cover;">
+                        <i class="fa-solid fa-scroll"></i>
+                    </div>
+                    <div class="gallery-desc">
+                        <h4>სიგარეტის ქაღალდის ხელნაწერები</h4>
+                        <p>საბჭოთა გულაგში, სიკვდილის აჩრდილქვეშ, სიგარეტის ქაღალდზე დაწერილი სიტყვები, რომლებიც ქართული სულის სიმტკიცის სიმბოლოდ იქცა.</p>
+                    </div>
+                </div>
+
+                <div class="gallery-item">
+                    <div class="gallery-img" style="background: linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)), url('https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&w=400&q=80') center/cover;">
+                        <i class="fa-solid fa-person-military-pointing"></i>
+                    </div>
+                    <div class="gallery-desc">
+                        <h4>დავით ჯანდიერი და გმირები</h4>
+                        <p>ქართველი რაინდები და ქალები, რომლებიც პირადი ბედნიერების ფასად ირჩევენ ერისა და სარწმუნოების სამსახურს.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-card" style="border-color: var(--accent-gold);">
+                <h3 style="color: var(--accent-gold);"><i class="fa-solid fa-gem"></i> რა მოგვცა ამ ნაწარმოებმა?</h3>
+                <p><strong>1. გმირობის დემითოლოგიზაცია:</strong> გოთუამ გვიჩვენა, რომ გმირობა არ არის ლამაზი ზღაპარი. გმირობა არის «ვარამი» — მძიმე ტვირთი, ტკივილი, დაკარგული სიყვარული და მუდმივი თავგანწირვა.</p>
+                <p style="margin-top: 12px;"><strong>2. ისტორიული მეხსიერების გადარჩენა:</strong> საბჭოთა ცენზურის პერიოდში, წიგნმა ქართველ ხალხს შეახსენა ეროვნული იდენტობა, სახელმწიფოებრივი აზროვნება და შინაგანი დაპირისპირების დამღუპველი ძალა.</p>
+            </div>
+        </div>
+
+        <!-- App 5: Quiz -->
+        <div id="app5" class="tab-content">
+            <h2 class="section-title" style="color: var(--accent-gold);">შეამოწმე შენი ცოდნა — ვიქტორინა</h2>
+            <div class="quiz-container">
+                <div id="quizBox">
+                    <div class="quiz-header">
+                        <span id="quizCounter" class="quiz-progress">კითხვა 1 / 5</span>
+                        <span id="quizScoreTracker" style="color: var(--text-muted);">ქულა: 0</span>
+                    </div>
+                    <h3 id="questionText" class="quiz-question">კითხვა ჩაიტვირთება...</h3>
+                    <div id="optionsContainer"></div>
+                    <button id="nextBtn" class="btn-next" onclick="nextQuestion()"><i class="fa-solid fa-arrow-right"></i> შემდეგი კითხვა</button>
+                </div>
+                <div id="scoreBox" class="score-board" style="display: none;"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Modal for Chapter Details -->
+    <div class="modal" id="chapterModal" onclick="handleBackdropClick(event)">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <div class="illustration-box" id="modalIcon">
+                <i class="fa-solid fa-crown"></i>
+                <span>ილუსტრაციული ეპიზოდი</span>
+            </div>
+            <div class="modal-body" id="modalBody"></div>
+        </div>
+    </div>
+
+    <script>
+        const chapters = [
+            {
+                id: "I",
+                title: "I. გრემის ნათლობა და ამბის დასაწყისი",
+                icon: "fa-baby-carriage",
+                p1_title: "სადღესასწაულო განწყობა",
+                p1_text: "გრემში დიდი ამბავია — მეფის ოჯახში ბავშვი ინათლება. ხალხი, ვაჭრები, დიდებულები, ყველანი ერთად ზეიმობენ.",
+                p2_title: "ჩუმად მოსული საფრთხე",
+                p2_text: "გარეთ კი ჩანს, რომ ყველაფერი კარგადაა, მაგრამ სინამდვილეში ქალაქში დიდი დაძაბულობაა და იგრძნობა, რომ ცუდი რაღაც ახლოვდება."
+            },
+            {
+                id: "II",
+                title: "II. კახეთის სამეფო და მეფის კარის ცხოვრება",
+                icon: "fa-chess-king",
+                p1_title: "საგარეო პრობლემები",
+                p1_text: "კახეთს ძალიან უჭირს, რადგან ირანიც და ოსმალეთიც ავიწროებენ. მეფესა და მმართველებს უწევთ ფიქრი, როგორ გადაარჩინონ ქვეყანა.",
+                p2_title: "სასახლის ამბები & დავით ჯანდიერი",
+                p2_text: "მეფის კარზე გადაწყვეტილებების მიღება იოლი არ არის — ზოგი ქვეყანაზე ფიქრობს, ზოგიც თავის სარგებელზე. ამ დროს გამოჩნდება დავით ჯანდიერი, რომელიც ამ ყველაფერში მთავარ როლს ითამაშებს."
+            },
+            {
+                id: "III",
+                title: "III. ადამიანური ისტორიები და პირველი კონფლიქტები",
+                icon: "fa-heart-crack",
+                p1_title: "უბრალო ხალხის ტკივილი",
+                p1_text: "ომი მხოლოდ მეფეებს არ ეხება, ჩვეულებრივ ოჯახებსა და ახალგაზრდებსაც უნგრევს ცხოვრებას.",
+                p2_title: "მძიმე დარტყმა",
+                p2_text: "საყვარელი ადამიანების დაკარგვა ზოგს სულს უტეხავს და ხალხს ერიდება, ზოგი კი ბრაზდება და ბრძოლას აგრძელებს."
+            },
+            {
+                id: "IV",
+                title: "IV. დაკარგულთა ძიება და ქალების თავგანწირვა",
+                icon: "fa-person-dress",
+                p1_title: "მძიმე გზა",
+                p1_text: "სათინო და საბედო ჩუმად, შავებში გახვეულები მიდიან უცხო მხარეში, რომ თავისი დაკარგული ოჯახის წევრები იპოვონ.",
+                p2_title: "მაგარი ქალები",
+                p2_text: "ეს ქალები უბრალოდ სახლში კი არ სხედან, არამედ საოცარ სიმამაცეს იჩენენ და სიცოცხლეს რისკავენ ახლობლებისთვის."
+            },
+            {
+                id: "V",
+                title: "V. ჯანდიერისა და სხვა გმირების ბედი",
+                icon: "fa-user-shield",
+                p1_title: "რთული არჩევანი",
+                p1_text: "დავით ჯანდიერი არჩევანის წინაშე დგას — წყნარად იცხოვროს თუ ხალხს გაჰყვეს და მათზე აიღოს პასუხისმგებლობა.",
+                p2_title: "ნამდვილი გმირობა",
+                p2_text: "ის ირჩევს სიმართლესა და ერთგულებას, მიუხედავად იმისა, რომ იცის, ამით საკუთარ თავს საფრთხეში იგდებს."
+            },
+            {
+                id: "VI",
+                title: "VI. პოლიტიკური დაპირისპირება და საფრთხის ზრდა",
+                icon: "fa-volcano",
+                p1_title: "მტრის ზეწოლა",
+                p1_text: "ირანი სულ უფრო მეტად ავიწროებს კახეთს და ვითარება ძალიან მძიმდება.",
+                p2_title: "შინაგანი დაშლა",
+                p2_text: "ამდენ პრობლემას ისიც ემატება, რომ დიდებულები ერთმანეთს უპირისპირდებიან და საერთო ენას ვერ პოულობენ."
+            },
+            {
+                id: "VII",
+                title: "VII. ოჯახური დრამები და დაშორებები",
+                icon: "fa-people-arrows",
+                p1_title: "დაშორებული ოჯახები",
+                p1_text: "ომისა და ტყვეობის გამო ახლობლები ერთმანეთს წყდებიან და წლობით ვერ ხედავენ.",
+                p2_title: "მუდმივი ნერვიულობა",
+                p2_text: "ყველაზე საშინელი მაინც ის უცნობლობაა, როცა არ იცი, შენი საყვარელი ადამიანი ცოცხალია თუ არა."
+            },
+            {
+                id: "VIII",
+                title: "VIII. ბრძოლები და მძიმე არჩევანი",
+                icon: "fa-shield-halberd",
+                p1_title: "არამხოლოდ ხმლით ბრძოლა",
+                p1_text: "ომში მხოლოდ ფიზიკური ძალა არ წყვეტს ყველაფერს — მთავარი ერთგულება, ჭკუა და ნდობაა.",
+                p2_title: "რა არის გმირობა",
+                p2_text: "გმირობა მარტო ომში სიარული კი არ არის, არამედ პირობის შესრულება და მეგობრის გვერდით დგომა."
+            },
+            {
+                id: "IX",
+                title: "IX. სიყვარულის ხაზი და ქორწინებები",
+                icon: "fa-hand-holding-heart",
+                p1_title: "გრძნობები ომის დროს",
+                p1_text: "ამდენ არეულობაში სიყვარული მაინც არსებობს, თუმცა წყვილებს უამრავი დაბრკოლება ხვდებათ.",
+                p2_title: "იძულებითი ნაბიჯები",
+                p2_text: "ზოგი ქორწინება პოლიტიკის გამო ხდება, მაგრამ გმირები მაინც ცდილობენ, ადამიანობა არ დაკარგონ."
+            },
+            {
+                id: "X",
+                title: "X. შიდა შუღლი და დიდი დაპირისპირება",
+                icon: "fa-skull-crossbones",
+                p1_title: "უნდობლობა",
+                p1_text: "შური და ეჭვები ანგრევს მეგობრობასაც და მოკავშირეობასაც.",
+                p2_title: "ყველაზე დიდი მტერი",
+                p2_text: "ნაწარმოებში კარგად ჩანს, რომ შიდა დაპირისპირება გარეშე მტერზე მეტად აზარალებს ქვეყანას."
+            },
+            {
+                id: "XI",
+                title: "XI. დიდი მარცხები და ახალი ვითარება",
+                icon: "fa-triangle-exclamation",
+                p1_title: "გეგმების ჩაშლა",
+                p1_text: "როცა საქმე ცუდად მიდის და მარცხდებიან, პერსონაჟები იძულებულნი ხდებიან დაფიქრდნენ თავიანთ შეცდომებზე.",
+                p2_title: "ფეხზე წამოდგომა",
+                p2_text: "ზოგი აღიარებს შეცდომას და ცდილობს, ამ ახალ, მძიმე რეალობაში რამე გამოასწოროს."
+            },
+            {
+                id: "XII",
+                title: "XII. საბოლოო დაძაბულობა",
+                icon: "fa-fire-flame-curved",
+                p1_title: "პიკს მიღწეული კრიზისი",
+                p1_text: "ყველაფერი ერთად ფეთქდება — ძველი წყენა, სიყვარული, ღალატი და პოლიტიკური ბრძოლა.",
+                p2_title: "მორალური გამოცდა",
+                p2_text: "გმირები დგებიან უმძიმესი არჩევანის წინაშე, სადაც საკუთარი სიცოცხლის ფასად უნდა დაიცვან სახელი და ღირსება."
+            },
+            {
+                id: "XIII",
+                title: "XIII. დასასრული და მთავარი შედეგი",
+                icon: "fa-monument",
+                p1_title: "სევდიანი რეალობა",
+                p1_text: "წიგნი ზღაპარივით ბედნიერად არ მთავრდება — ბევრი ადამიანი იღუპება და ოჯახები იშლება, თუმცა ერი მაინც გადარჩება.",
+                p2_title: "მთავარი სათქმელი",
+                p2_text: "„გმირთა ვარამი“ სწორედ იმას ნიშნავს, რომ გმირობას თან სდევს დიდი ტანჯვა და ტკივილი, რომელიც ამ ხალხმა სამშობლოს გადასარჩენად აიტანა."
+            }
+        ];
+
+        // Render Chapters
+        const grid = document.getElementById('chapterGrid');
+        chapters.forEach((ch, index) => {
+            const card = document.createElement('div');
+            card.className = 'chapter-card';
+            card.innerHTML = `
+                <div class="chapter-header">
+                    <h3>${ch.title}</h3>
+                    <i class="fa-solid fa-chevron-right" style="color: var(--accent-gold);"></i>
+                </div>
+            `;
+            card.onclick = () => openModal(index);
+            grid.appendChild(card);
+        });
+
+        function openModal(index) {
+            const ch = chapters[index];
+            document.getElementById('modalIcon').innerHTML = `<i class="fa-solid ${ch.icon}"></i><span>ილუსტრაციული ეპიზოდი</span>`;
+            document.getElementById('modalBody').innerHTML = `
+                <h2>${ch.title}</h2>
+                <h4><i class="fa-solid fa-feather-pointed"></i> ${ch.p1_title}</h4>
+                <p>${ch.p1_text}</p>
+                <h4><i class="fa-solid fa-shield"></i> ${ch.p2_title}</h4>
+                <p>${ch.p2_text}</p>
+            `;
+            document.getElementById('chapterModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('chapterModal').style.display = 'none';
+        }
+
+        function handleBackdropClick(e) {
+            if (e.target.id === 'chapterModal') {
+                closeModal();
+            }
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        function switchTab(tabId, btnElement) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            
+            const targetTab = document.getElementById(tabId);
+            if (targetTab) {
+                targetTab.classList.add('active');
+            }
+            if (btnElement) {
+                btnElement.classList.add('active');
+            }
+        }
+
+        // Quiz Logic
+        const quizData = [
+            {
+                question: "სად და რა პირობებში დაწერა ლევან გოთუამ „გმირთა ვარამი“?",
+                options: ["თბილისის მწერალთა სახლში", "ვორკუტის ბანაკში, სიგარეტის ქაღალდებზე", "საფრანგეთში ემიგრაციაში ყოფნისას", "სოხუმის სააგარაკო სახლში"],
+                answer: 1
+            },
+            {
+                question: "რომელ საუკუნეების საქართველოს ისტორიას აღწერს რომანი?",
+                options: ["XII-XIII საუკუნეები", "IV-V საუკუნეები", "XVI-XVII საუკუნეები", "XIX საუკუნის დასაწყისი"],
+                answer: 2
+            },
+            {
+                question: "როგორ შეძლეს «გმირთა ვარამის» ხელნაწერების ბანაკიდან გამოტანა?",
+                options: ["დიპლომატიური ფოსტით", "ხის მორებში დამალვით", "ფოსტალიონის დახმარებით", "ელექტრონული სახით"],
+                answer: 1
+            },
+            {
+                question: "რა მეტსახელით იცნობდნენ ლევან გოთუას საკონცენტრაციო ბანაკის პატიმრები?",
+                options: ["„ლევან ოსტატი“", "„ლევან ბერი“", "„მწერალი“", "„რაინდი“"],
+                answer: 1
+            },
+            {
+                question: "რას ნიშნავს რომანის სათაური „გმირთა ვარამი“?",
+                options: ["გმირების დიდებასა და გამარჯვებას", "გმირობის თანმდევ დიდ ტანჯვასა და ტკივილს", "მხოლოდ საომარ მხნეობას", "მეფეთა ზეიმსა და ფუფუნებას"],
+                answer: 1
+            }
+        ];
+
+        let currentQ = 0;
+        let score = 0;
+
+        function loadQuiz() {
+            const q = quizData[currentQ];
+            document.getElementById('quizCounter').innerText = `კითხვა ${currentQ + 1} / ${quizData.length}`;
+            document.getElementById('quizScoreTracker').innerText = `ქულა: ${score}`;
+            document.getElementById('questionText').innerText = `${currentQ + 1}. ${q.question}`;
+            const optsContainer = document.getElementById('optionsContainer');
+            optsContainer.innerHTML = '';
+            document.getElementById('nextBtn').style.display = 'none';
+
+            q.options.forEach((opt, i) => {
+                const div = document.createElement('div');
+                div.className = 'quiz-option';
+                div.innerHTML = `<i class="fa-regular fa-circle"></i> <span>${opt}</span>`;
+                div.onclick = () => selectOption(i, div);
+                optsContainer.appendChild(div);
+            });
+        }
+
+        function selectOption(index, el) {
+            const q = quizData[currentQ];
+            const options = document.querySelectorAll('.quiz-option');
+            options.forEach(opt => opt.style.pointerEvents = 'none');
+
+            if (index === q.answer) {
+                el.classList.add('correct');
+                el.querySelector('i').className = 'fa-solid fa-circle-check';
+                score++;
+            } else {
+                el.classList.add('incorrect');
+                el.querySelector('i').className = 'fa-solid fa-circle-xmark';
+                options[q.answer].classList.add('correct');
+                options[q.answer].querySelector('i').className = 'fa-solid fa-circle-check';
+            }
+            document.getElementById('quizScoreTracker').innerText = `ქულა: ${score}`;
+            document.getElementById('nextBtn').style.display = 'inline-block';
+        }
+
+        function nextQuestion() {
+            currentQ++;
+            if (currentQ < quizData.length) {
+                loadQuiz();
+            } else {
+                document.getElementById('quizBox').style.display = 'none';
+                const scoreBox = document.getElementById('scoreBox');
+                scoreBox.style.display = 'block';
+                
+                let feedbackText = "სცადეთ თავიდან!";
+                if (score === quizData.length) feedbackText = "ბრწყინვალეა! თქვენ ზედმიწევნით იცნობთ თემას!";
+                else if (score >= 3) feedbackText = "ძალიან კარგი შედეგია!";
+
+                scoreBox.innerHTML = `
+                    <h3 style="color: var(--accent-gold); font-size: 1.8rem;">ვიქტორინა დასრულდა!</h3>
+                    <div class="score-number">${score} / ${quizData.length}</div>
+                    <p style="margin-bottom: 20px;">${feedbackText}</p>
+                    <button class="btn-restart" style="display: inline-block;" onclick="restartQuiz()"><i class="fa-solid fa-rotate-right"></i> თავიდან დაწყება</button>
+                `;
+            }
+        }
+
+        function restartQuiz() {
+            currentQ = 0;
+            score = 0;
+            document.getElementById('scoreBox').style.display = 'none';
+            document.getElementById('quizBox').style.display = 'block';
+            loadQuiz();
+        }
+
+        loadQuiz();
+    </script>
+</body>
+</html>
